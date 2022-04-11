@@ -1,6 +1,4 @@
-# HDFS homework
-
-## Source code - [link](src/)
+# CSV convertor to avro/parquet
 
 ## Description:
 [converter.py](src/converter.py) contains converter classes that convert received csv file to file with chosen extension.  
