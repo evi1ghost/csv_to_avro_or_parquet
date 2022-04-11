@@ -1,5 +1,6 @@
 import os
 import sys
+from abc import ABCMeta, abstractmethod
 
 import fastavro
 import numpy as np
@@ -7,9 +8,9 @@ import pandas as pd
 from pyarrow import Table, parquet
 
 
-class BaseConverter:
+class BaseConverter(metaclass=ABCMeta):
     """
-    Base class for convertators.
+    Base class for converters.
 
     Validate received parameters for future use.
     """
@@ -65,12 +66,10 @@ class BaseConverter:
             chunksize=100000
         )
 
+    @abstractmethod
     def convert(self):
         """Should be implemented in child class"""
-        raise NotImplementedError(
-            'BaseConvertor class does not support convertation.'
-            'Child classes should be used.'
-        )
+        pass
 
 
 class ParquetConverter(BaseConverter):
@@ -152,14 +151,14 @@ class AvroConverter(BaseConverter):
 
 
 if __name__ == '__main__':
-    convertors = {
+    converters = {
         'parquet': ParquetConverter,
         'avro': AvroConverter
     }
     csv_file, result_path, result_type = sys.argv[1], sys.argv[2], sys.argv[3]
-    if result_type.lower() not in convertors:
+    if result_type.lower() not in converters:
         raise ValueError(
             'Invalid target type. Avalible types: avro, parquet.'
         )
-    converter = convertors[result_type.lower()](csv_file, result_path)
+    converter = converters[result_type.lower()](csv_file, result_path)
     converter.convert()
